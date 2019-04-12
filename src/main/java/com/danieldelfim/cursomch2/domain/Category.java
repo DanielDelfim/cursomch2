@@ -1,11 +1,14 @@
 package com.danieldelfim.cursomch2.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity // define que esta classe category é uma entidade JPA
 public class Category implements Serializable {
@@ -15,7 +18,13 @@ public class Category implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY) //define a geração automática dos id's para category
 	private Integer id;
 	private String nome;
-
+	
+	@ManyToMany(mappedBy="categories") // faz referencia ao mapeamento construido na classe Product
+	private List<Product> products = new ArrayList<>();
+	/* como o objeto produto é uma coleção (uma lista), ela deve ser iniciada com new ArrayList ou outro.
+	 Conforme a UML gerada, temos que uma category pode ter vários produtos, neste caso tem que ser gerada uma lista.
+	 A associação é entre produto e categoria, na classe produto também deverá ser declarada uma lista.
+	*/
 	public Category() {
 	}
 
@@ -39,6 +48,14 @@ public class Category implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
 
 	@Override
@@ -65,5 +82,6 @@ public class Category implements Serializable {
 			return false;
 		return true;
 	}
+
 
 }
