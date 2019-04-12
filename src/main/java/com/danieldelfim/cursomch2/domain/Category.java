@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity // define que esta classe category é uma entidade JPA
 public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -19,6 +21,8 @@ public class Category implements Serializable {
 	private Integer id;
 	private String nome;
 	
+	@JsonManagedReference // referencia gerenciada pelo Json que irá finalizar a referencia ciclica existente entre categoria e produto
+	//Este código é colocado no lado em que voê quer que venha os objetos refenciados. No outro lado será diferente
 	@ManyToMany(mappedBy="categories") // faz referencia ao mapeamento construido na classe Product
 	private List<Product> products = new ArrayList<>();
 	/* como o objeto produto é uma coleção (uma lista), ela deve ser iniciada com new ArrayList ou outro.
