@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.danieldelfim.cursomch2.domain.Category;
 import com.danieldelfim.cursomch2.domain.Cidade;
+import com.danieldelfim.cursomch2.domain.Cliente;
+import com.danieldelfim.cursomch2.domain.Endereco;
 import com.danieldelfim.cursomch2.domain.Estado;
 import com.danieldelfim.cursomch2.domain.Product;
+import com.danieldelfim.cursomch2.domain.enums.TipoCliente;
 import com.danieldelfim.cursomch2.repositories.CategoryRepository;
 import com.danieldelfim.cursomch2.repositories.CidadeRepository;
+import com.danieldelfim.cursomch2.repositories.ClienteRepository;
+import com.danieldelfim.cursomch2.repositories.EnderecoRepository;
 import com.danieldelfim.cursomch2.repositories.EstadoRepository;
 import com.danieldelfim.cursomch2.repositories.ProductRepository;
 
@@ -29,8 +34,11 @@ public class Cursomch2Application implements CommandLineRunner {
 	CidadeRepository cidadeRepository;
 	@Autowired // Instancia automaticamente o objeto productRepository e executamos o método necessário 
 	EstadoRepository estadoRepository;
-
-
+	@Autowired // Instancia automaticamente o objeto productRepository e executamos o método necessário 
+	ClienteRepository clienteRepository;
+	@Autowired
+	EnderecoRepository enderecoRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Cursomch2Application.class, args);
 	}
@@ -58,6 +66,7 @@ public class Cursomch2Application implements CommandLineRunner {
 //finalizada a tabela de associação PRODUCT_CATEGORY
 		categoryRepository.saveAll(Arrays.asList(cat1, cat2));
 		productRepository.saveAll(Arrays.asList(p1, p2, p3));
+// com o categoryRepository. temos acesso a todas os métodos disponíveis no objeto. Como são várias caegorias, salvamos como lista.
 		
 		Estado est1 = new Estado(null, "Minas Gerais");
 		Estado est2 = new Estado(null, "São Paulo");
@@ -72,9 +81,17 @@ public class Cursomch2Application implements CommandLineRunner {
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		
-		
-// com o categoryRepository. temos acesso a todas os métodos disponíveis no objeto. Como são várias caegorias, salvamos como lista.
-		
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+//criamos os objeto cliente
+		cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
+//vinculamos os telefones a este cliente
+		Endereco e1 = new Endereco(null, "Rua das Flores", "300", "apto 203", "Jardim", "38220834", cli1, c1);
+		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "sala 800", "Centro", "38777012", cli1, c2);
+//agor os endereços já conhecem seus clientes		
+		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+//agora os clientes já conhecem seus endereços
+		clienteRepository.saveAll(Arrays.asList(cli1));// o cliente deve ser salvo primeiro pois ele é independente.
+		enderecoRepository.saveAll(Arrays.asList(e1, e2));
 	}
 
 }
